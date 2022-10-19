@@ -1,0 +1,16 @@
+- config: configs/flownet2/flownet2cs_8x1_sfine_flyingthings3d_subset_384x768.py
+  path: checkpoints/flownet2cs_8x1_sfine_flyingthings3d_subset_384x768.pth
+- config: configs/flownet2/flownet2css-sd_8x1_sfine_flyingthings3d_subset_chairssdhom_384x448.py
+  path: checkpoints/flownet2css-sd_8x1_sfine_flyingthings3d_subset_chairssdhom_384x448.pth
+- config: configs/irr/irrpwc_ft_4x1_300k_sintel_final_384x768.py
+  path: checkpoints/irrpwc_ft_4x1_300k_sintel_final_384x768.pth
+- config: configs/liteflownet2/liteflownet2_ft_4x1_600k_sintel_kitti_320x768.py
+  path: checkpoints/liteflownet2_ft_4x1_600k_sintel_kitti_320x768.pth
+- config: configs/liteflownet/liteflownet_ft_4x1_500k_kitti_320x896.py
+  path: checkpoints/liteflownet_ft_4x1_500k_kitti_320x896.pth
+- config: configs/maskflownet/maskflownet_8x1_500k_flyingthings3d_subset_384x768.py
+  path: checkpoints/maskflownet_8x1_500k_flyingthings3d_subset_384x768.pth
+- config: configs/pwcnet/pwcnet_ft_4x1_300k_sintel_final_384x768.py
+  path: checkpoints/pwcnet_ft_4x1_300k_sintel_final_384x768.pth
+- config: configs/raft/raft_8x2_100k_flyingthings3d_sintel_368x768.py
+  path: checkpoints/raft_8x2_100k_flyingthings3d_sintel_368x768.pth
