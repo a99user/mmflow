@@ -24,6 +24,8 @@ def parse_args():
     parser.add_argument('video', help='video file')
     parser.add_argument('config', type=Path, help='Config yaml file')
     parser.add_argument('out', type=Path, help='output folder')
+    parser.add_argument('--filter',  action="store_true", default=False,
+                        help="Use only Red channel")
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     args = parser.parse_args()
@@ -72,6 +74,19 @@ def main(args):
                 
                 # estimate flow
                 result = inference_model(model, prev_frame, cur_frame)
+
+                if args.filter:
+                    dx = result[:, :, 0].copy()
+                    dy = result[:, :, 1].copy()
+                    angle = np.arctan2(-dy, -dx) / np.pi
+                    ignore_inds = ( (angle < 0.45) | (angle > 0.55) )
+
+                    dx[ignore_inds] = 0
+                    dy[ignore_inds] = 0
+
+                    result[:, :, 0] = dx.copy()
+                    result[:, :, 1] = dy.copy()
+
                 flow_map = visualize_flow(result, None)
                 # visualize_flow return flow map with RGB order
                 flow_map = cv2.cvtColor(flow_map, cv2.COLOR_RGB2BGR)
@@ -84,45 +99,6 @@ def main(args):
 
         in_cap.release()
         out_cap.release()
-
-
-def create_video(frames: Sequence[ndarray], out: str, fourcc: int, fps: int,
-                 size: tuple) -> None:
-    """Create a video to save the optical flow.
-
-    Args:
-        frames (list, tuple): Image frames.
-        out (str): The output file to save visualized flow map.
-        fourcc (int): Code of codec used to compress the frames.
-        fps (int):      Framerate of the created video stream.
-        size (tuple): Size of the video frames.
-    """
-    # init video writer
-    video_writer = cv2.VideoWriter(out, fourcc, fps, size, True)
-
-    for frame in frames:
-        video_writer.write(frame)
-    video_writer.release()
-
-
-def create_gif(frames: Sequence[ndarray],
-               gif_name: str,
-               duration: float = 0.1) -> None:
-    """Create gif through imageio.
-
-    Args:
-        frames (list[ndarray]): Image frames.
-        gif_name (str): Saved gif name
-        duration (int): Display interval (s). Default: 0.1.
-    """
-    frames_rgb = []
-    for frame in frames:
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frames_rgb.append(frame_rgb)
-    if imageio is None:
-        raise RuntimeError('imageio is not installed,'
-                           'Please use “pip install imageio” to install')
-    imageio.mimsave(gif_name, frames_rgb, 'GIF', duration=duration)
 
 
 if __name__ == '__main__':
